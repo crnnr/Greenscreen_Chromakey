@@ -18,7 +18,7 @@ Installation
 
     Install the required packages by running pip install opencv-python cvzone in your command line.
     Clone or download this repository to your local machine.
-    Run the script using python background_changer.py
+    Run the script using python app.py
 
 Usage
 
