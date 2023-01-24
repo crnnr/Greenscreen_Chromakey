@@ -37,3 +37,10 @@ Limitations
     The SelfiSegmentationModule is not perfect, so the background removal may not always be accurate.
     The script can only handle one person in the video feed.
     The script only works with static background images.
+
+TODOS
+
+    Implement better segmentation model: The SelfiSegmentationModule used in this script is not the most advanced model for background removal. There are other     
+    models available such as DeepLabV3+ or Mask R-CNN that can provide more accurate results.
+
+    Background subtraction method: Implementing a background subtraction method such as MOG2 or KNN.
