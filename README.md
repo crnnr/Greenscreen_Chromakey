@@ -1,6 +1,7 @@
 Background Changer
 
 This is a simple Python script that allows you to change the background of a live video feed using OpenCV and the SelfiSegmentationModule from the cvzone package.
+
 Features
 
     Changes the background of a live video feed to a specified image
