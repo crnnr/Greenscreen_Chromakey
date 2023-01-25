@@ -20,6 +20,7 @@ print(len(imgList))
 
 indexImg = 0
 
+cv2.namedWindow("Image", cv2.WINDOW_NORMAL)
 while True:
     success, img = cap.read()
     imgOut = segementor.removeBG(img, imgList[indexImg], threshold=0.8)
