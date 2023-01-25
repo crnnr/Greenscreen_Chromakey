@@ -1,47 +1,28 @@
-Background Changer
+# Greenscreen_Chromakey
+Captures Stream of Webcam and replaces with a custom picture
 
-This is a simple Python script that allows you to change the background of a live video feed using OpenCV and the SelfiSegmentationModule from the cvzone package.
+# What you'll need
+Python 3.9.X and above
 
-Features
+# How to Setup
 
-    Changes the background of a live video feed to a specified image
-    Allows for adjusting the threshold value for the background removal
-    Allows for switching between multiple background images
+1. Install python Packages: `opencv-python, cvzone, mediapipe`
+2. Clone Repository
+3. Run in commandline via cmd: 
+   `python app.py`
+Note: The App can be closed by pressing "c" or Interrupting the process with Ctrl-C 
 
-Setup
-Prerequisites
+# Features
 
-    Python 3.x
-    OpenCV
-    cvzone
+1. Dynamic Backgroundimage selection:
 
-Installation
+Included in the repo is an "Image" Folder.
+After running the app it scans the folder for pictures and puts them in an Array. 
+You can then cycle trough Pictures using the "+" and "-" Key.
+This folder can be changed in lines 13 and 17 in the Code. 
+Please note that the Pictures need to have the same resolution as the Webcam.
 
-    Install the required packages by running pip install opencv-python cvzone in your command line.
-    Clone or download this repository to your local machine.
-    Run the script using python app.py
+# TODO
 
-Usage
-
-    Run the script and allow access to your webcam.
-    Press 'q', 'w' or 'e' to change the background to the corresponding image.
-    Press '+' or '-' to adjust the threshold value for the background removal.
-    Press 'c' to exit the program.
-
-Note
-
-    Make sure that the background images you want to use have the same resolution as your webcam's resolution.
-    The script uses the webcam's resolution of 640x480 by default, but you can change it by modifying the video.set(3,640) and video.set(4,480) lines in the script.
-
-Limitations
-
-    The SelfiSegmentationModule is not perfect, so the background removal may not always be accurate.
-    The script can only handle one person in the video feed.
-    The script only works with static background images.
-
-TODOS
-
-    Implement better segmentation model: The SelfiSegmentationModule used in this script is not the most advanced model for background removal. There are other     
-    models available such as DeepLabV3+ or Mask R-CNN that can provide more accurate results.
-
-    Background subtraction method: Implementing a background subtraction method such as MOG2 or KNN.
+1. Implement Dynamic Threshold Adjustment
+2. Add logging functions
