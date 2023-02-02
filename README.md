@@ -25,6 +25,7 @@ Please note that the Pictures need to have the same resolution as the Webcam.
 # Command line parameters
 
 -noslide: Removes the slider from the app
+
 -onlykeyed: Shows only the final picture with the adjusted background, no webcam feed or slider.
 
 # TODO
