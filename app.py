@@ -1,43 +1,54 @@
 import cv2
-import numpy as np
+import cvzone
+from cvzone.SelfiSegmentationModule import SelfiSegmentation
+import argparse
+import os
 
-# Initialize the background subtractor
-bg_subtractor = cv2.createBackgroundSubtractorMOG2()
+ap = argparse.ArgumentParser()
+ap.add_argument("-ns", "--noslide", help="Remove the slider from the application", action="store_true")
+ap.add_argument("-ok", "--onlykeyed", help="Show only the final picture with adjusted background", action="store_true")
+args = vars(ap.parse_args())
 
-def change_background(image, video):
-    bg_image = cv2.imread(image)
-    bg_image = cv2.resize(bg_image, (640, 480))
-    for i in range(30):
-        check, frame = video.read()
-        fgmask = bg_subtractor.apply(frame)
-    while True:
-        check, frame = video.read()
-        fgmask = bg_subtractor.apply(frame)
-        _, fgmask = cv2.threshold(fgmask, 128, 255, cv2.THRESH_BINARY)
-        black_img = np.zeros_like(frame)
-        cv2.bitwise_and(black_img, black_img, mask=fgmask)
-        cv2.addWeighted(bg_image, 0.7, black_img, 0.3, 0, black_img)
-        cv2.imshow('video', image)
-        key = cv2.waitKey(1)
-        if key == ord('c'):
-            break
+cap = cv2.VideoCapture(0)
+cap.set(3, 640)
+cap.set(4, 480)
+cap.set(cv2.CAP_PROP_FPS, 60)
+segementor = SelfiSegmentation()
+fpsReader = cvzone.FPS()
 
-video = cv2.VideoCapture(0)
-# Auflösung des Videos
-video.set(3,640)
-video.set(4,480)
+listImg = os.listdir("./images/")
+print(listImg)
+imgList = []
+for imgPath in listImg:
+    img = cv2.imread(f'./images/{imgPath}')
+    imgList.append(img)
+print(len(imgList))
+
+indexImg = 0
+
+cv2.namedWindow("Image", cv2.WINDOW_NORMAL)
+
+if not args["noslide"]:
+    cv2.createTrackbar("Threshold", "Image", 80, 100, lambda x: x)
 
 while True:
-    _,frame = video.read()
-    #Main Window Initieren
-    cv2.namedWindow('video', cv2.WINDOW_NORMAL)
-    cv2.imshow("video",frame)
+    success, img = cap.read()
+    threshold = cv2.getTrackbarPos("Threshold", "Image") / 100 if not args["noslide"] else 0.8
+    imgOut = segementor.removeBG(img, imgList[indexImg], threshold=threshold)
+
+    if args["onlykeyed"]:
+        cv2.imshow("Image", imgOut)
+    else:
+        imgStacked = cvzone.stackImages([img, imgOut], 2, 1)
+        _, imgStacked = fpsReader.update(imgStacked, color=(0, 0, 255))
+        cv2.imshow("Image", imgStacked)
+
     key = cv2.waitKey(1)
-    if key == ord('q'):
-        change_background("1.jpg", video)
-    elif key == ord('w'):
-        change_background("2.jpg", video)
-    elif key == ord('e'):
-        change_background("3.png", video)
+    if key == ord('+'):
+        if indexImg < len(imgList) - 1:
+            indexImg += 1
+    elif key == ord('-'):
+        if indexImg > 0:
+            indexImg -= 1
     elif key == ord('c'):
         break
