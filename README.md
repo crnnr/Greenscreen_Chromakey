@@ -22,6 +22,11 @@ You can then cycle trough Pictures using the "+" and "-" Key.
 This folder can be changed in lines 13 and 17 in the Code. 
 Please note that the Pictures need to have the same resolution as the Webcam.
 
+# Command line parameters
+
+-noslide: Removes the slider from the app
+-onlykeyed: Shows only the final picture with the adjusted background, no webcam feed or slider.
+
 # TODO
 
 1. Implement Dynamic Threshold Adjustment
