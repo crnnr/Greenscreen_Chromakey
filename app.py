@@ -9,9 +9,14 @@ ap.add_argument("-ns", "--noslide", help="Remove the slider from the application
 ap.add_argument("-ok", "--onlykeyed", help="Show only the final picture with adjusted background", action="store_true")
 args = vars(ap.parse_args())
 
+
+
 cap = cv2.VideoCapture(0)
-cap.set(3, 640)
-cap.set(4, 480)
+width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+print("Camera resolution:",width, height)
+cap.set(3, int(height))
+cap.set(4, int(width))
 cap.set(cv2.CAP_PROP_FPS, 60)
 segementor = SelfiSegmentation()
 fpsReader = cvzone.FPS()
