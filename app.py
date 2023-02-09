@@ -3,6 +3,7 @@ import cvzone
 from cvzone.SelfiSegmentationModule import SelfiSegmentation
 import argparse
 import os
+import datetime
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-ns", "--noslide", help="Remove the slider from the application", action="store_true")
@@ -13,7 +14,6 @@ args = vars(ap.parse_args())
 cap = cv2.VideoCapture(0)
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-print("Camera resolution:",width, height)
 cap.set(3, int(height))
 cap.set(4, int(width))
 cap.set(cv2.CAP_PROP_FPS, 60)
@@ -29,8 +29,10 @@ for imgPath in listImg:
 print(len(imgList))
 
 indexImg = 0
+screenshot_counter = 0
 
 cv2.namedWindow("Image", cv2.WINDOW_NORMAL)
+cv2.resizeWindow("Image", 600, 300)
 
 if not args["noslide"]:
     cv2.createTrackbar("Threshold", "Image", int(args["threshold"] * 100), 100, lambda x: x)
@@ -56,3 +58,8 @@ while True:
             indexImg -= 1
     elif key == ord('c'):
         break
+    elif key == ord('s'): # Add the key 's' to take a screenshot and save it
+        fileName = f"./screenshots/screenshot_{str(datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))}.jpg"
+        cv2.imwrite(fileName, imgOut)
+        print(f"[INFO] Saved screenshot as: {fileName}")
+
