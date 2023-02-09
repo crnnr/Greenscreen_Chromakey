@@ -7,9 +7,8 @@ import os
 ap = argparse.ArgumentParser()
 ap.add_argument("-ns", "--noslide", help="Remove the slider from the application", action="store_true")
 ap.add_argument("-ok", "--onlykeyed", help="Show only the final picture with adjusted background", action="store_true")
+ap.add_argument("-t", "--threshold", help="Threshold value to adjust the segmentation", type=float, default=0.8)
 args = vars(ap.parse_args())
-
-
 
 cap = cv2.VideoCapture(0)
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
@@ -34,11 +33,11 @@ indexImg = 0
 cv2.namedWindow("Image", cv2.WINDOW_NORMAL)
 
 if not args["noslide"]:
-    cv2.createTrackbar("Threshold", "Image", 80, 100, lambda x: x)
+    cv2.createTrackbar("Threshold", "Image", int(args["threshold"] * 100), 100, lambda x: x)
 
 while True:
     success, img = cap.read()
-    threshold = cv2.getTrackbarPos("Threshold", "Image") / 100 if not args["noslide"] else 0.8
+    threshold = cv2.getTrackbarPos("Threshold", "Image") / 100 if not args["noslide"] else args["threshold"]
     imgOut = segementor.removeBG(img, imgList[indexImg], threshold=threshold)
 
     if args["onlykeyed"]:
