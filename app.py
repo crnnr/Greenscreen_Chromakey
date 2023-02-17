@@ -1,4 +1,4 @@
-#imports
+# imports
 import cv2
 import cvzone
 from cvzone.SelfiSegmentationModule import SelfiSegmentation
@@ -12,9 +12,10 @@ ap.add_argument("-ns", "--noslide", help="Remove the slider from the application
 ap.add_argument("-ok", "--onlykeyed", help="Show only the final picture with adjusted background", action="store_true")
 ap.add_argument("-t", "--threshold", help="Threshold value to adjust the segmentation", type=float, default=0.8)
 ap.add_argument("-b", "--background", help="Show original background image next to keyed out image", action="store_true")
+ap.add_argument("-nfps", "--nofps", help="Do not display FPS reader", action="store_true")
 args = vars(ap.parse_args())
 
-#get videocapture stuff
+# get videocapture stuff
 cap = cv2.VideoCapture(0)
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
@@ -24,7 +25,7 @@ cap.set(cv2.CAP_PROP_FPS, 60)
 segementor = SelfiSegmentation()
 fpsReader = cvzone.FPS()
 
-# get backgroundimages
+# get background images
 listImg = os.listdir("./images/")
 print(listImg)
 imgList = []
@@ -39,7 +40,7 @@ screenshot_counter = 0
 cv2.namedWindow("Image", cv2.WINDOW_NORMAL)
 cv2.resizeWindow("Image", 900, 300)
 
-#parse parameters und decide what to display
+# parse parameters and decide what to display
 if not args["noslide"]:
     cv2.createTrackbar("Threshold", "Image", int(args["threshold"] * 100), 100, lambda x: x)
 
@@ -60,10 +61,11 @@ while True:
             cv2.imshow("Image", imgStacked)
         else:
             imgStacked = cvzone.stackImages([img, imgOut], 2, 1)
-        _, imgStacked = fpsReader.update(imgStacked, color=(0, 0, 255))
+        if not args["nofps"]:
+            _, imgStacked = fpsReader.update(imgStacked, color=(0, 0, 255))
         cv2.imshow("Image", imgStacked)
 
-#define keystrokes
+    # define keystrokes
     key = cv2.waitKey(1)
     if key == ord('+'):
         if indexImg < len(imgList) - 1:
@@ -75,5 +77,3 @@ while True:
         break
     elif key == ord('s'):
         fileName = f"./screenshots/screenshot_{str(datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))}.jpg"
-        cv2.imwrite(fileName, imgOut)
-        print(f"[INFO] Saved screenshot as: {fileName}")
