@@ -38,6 +38,8 @@ You can take a screenshot of the current window by pressing the key "s". The scr
 
 -b or --background: Diesplay the background picture next to the video output. Combineable with "-ok"
 
+-nfps or --nofps: Turn off the fps reader that reads the current framerate of the camera
+
 ## Examples
 
 1. Display the keyed out window next to the background with thresholdslider:
@@ -48,9 +50,9 @@ You can take a screenshot of the current window by pressing the key "s". The scr
    
    `python3 -ok -ns -t 0.5`
 
-3. diesplay the background image. the original camera stream and the keyed out window nwith thresholdslider:
+3. Display the background image. the original camera stream and the keyed out window with thresholdslider. Removes fps reader :
    
-   `python3 -b`
+   `python3 -b -nfps`
 
 ## TODO
 
