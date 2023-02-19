@@ -2,12 +2,20 @@ package main
 
 import (
 	_ "embed"
+	"fmt"
+	"log"
+	"os"
+	"os/exec"
+	"strings"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
+
+var runpy string
+var cmd string = "\\bin\\app.py"
 
 func main() {
 
@@ -30,9 +38,52 @@ func main() {
 
 	Launcher := widget.NewButtonWithIcon("Launch", theme.ConfirmIcon(), func() {
 
+		if Cameraoutput.Checked {
+			runpy = runpy + "1"
+		}
+
+		if finalpic.Checked {
+			runpy = runpy + "2"
+		}
+
+		if Backgroundpicture.Checked {
+			runpy = runpy + "3"
+		}
+
+		if Thresholdslider.Checked {
+			runpy = runpy + "4"
+		}
+
+		if fpsreader.Checked {
+			runpy = runpy + "5"
+		}
+
+		if strings.Contains(runpy, "1") {
+			cmd = cmd
+		}
+		if strings.Contains(runpy, "2") {
+			cmd = cmd + " -ok"
+		}
+		if strings.Contains(runpy, "3") {
+			cmd = cmd + " -b"
+		}
+
+		helptext.Text = runpy + " cmd: " + cmd
+
+		mydir, err := os.Getwd()
+		if err != nil {
+			fmt.Println(err)
+		}
+		mydir = mydir + cmd
+		cmdexec := (strings.Replace(mydir, "\\", "/", -1))
+		runcmd := exec.Command("python3 " + cmdexec)
+		if err := runcmd.Run(); err != nil {
+			log.Fatal(err)
+		}
+
 	})
 
-	contenttab1 := widget.NewVBox(Cameraoutput, finalpic, Backgroundpicture, Thresholdslider, fpsreader, Launcher)
+	contenttab1 := widget.NewVBox(Cameraoutput, finalpic, Backgroundpicture, Thresholdslider, fpsreader, Launcher, helptext)
 	contenttab3 := widget.NewVBox(helptext, helptext2, helptext3, helptext4, helptext5, helptext6, helptext7)
 	contenttab4 := widget.NewVBox(creatortext, creatortext2, Versionreference)
 
