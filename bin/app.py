@@ -13,6 +13,7 @@ ap.add_argument("-ok", "--onlykeyed", help="Show only the final picture with adj
 ap.add_argument("-t", "--threshold", help="Threshold value to adjust the segmentation", type=float, default=0.8)
 ap.add_argument("-b", "--background", help="Show original background image next to keyed out image", action="store_true")
 ap.add_argument("-nfps", "--nofps", help="Do not display FPS reader", action="store_true")
+ap.add_argument("-oi", "--onlyoriginal", help="Show only the original image", action="store_true")
 args = vars(ap.parse_args())
 
 # get videocapture stuff
@@ -27,12 +28,10 @@ fpsReader = cvzone.FPS()
 
 # get background images
 listImg = os.listdir("./images/")
-print(listImg)
 imgList = []
 for imgPath in listImg:
     img = cv2.imread(f'./images/{imgPath}')
     imgList.append(img)
-print(len(imgList))
 
 indexImg = 0
 screenshot_counter = 0
@@ -49,23 +48,30 @@ while True:
     threshold = cv2.getTrackbarPos("Threshold", "Image") / 100 if not args["noslide"] else args["threshold"]
     imgOut = segementor.removeBG(img, imgList[indexImg], threshold=threshold)
 
-    if args["onlykeyed"]:
-        if args["background"]:
-            imgStacked = cvzone.stackImages([imgList[indexImg], imgOut], 2, 1)
-            cv2.imshow("Image", imgStacked)
-        else:
-            cv2.imshow("Image", imgOut)
+#okay... so I tried around some things here... but this is just a ugly bit, i dont really know how to make this more beautiful
+#I mean... It's readable at least? Like you understand what is happening why right?
+    if args["onlyoriginal"] and args["onlykeyed"] and args["background"]:
+        imgStacked = cvzone.stackImages([imgList[indexImg], img, imgOut], 3, 1)
+    elif args["onlyoriginal"] and args["onlykeyed"]:
+        imgStacked = cvzone.stackImages([img, imgOut], 2, 1)
+    elif args["onlyoriginal"] and args["background"]:
+        imgStacked = cvzone.stackImages([img, imgList[indexImg]], 2, 1)
+    elif args["onlyoriginal"]:
+        imgStacked = cvzone.stackImages([img], 1, 1)
+    elif args["background"] and args["onlykeyed"]:
+        imgStacked = cvzone.stackImages([imgList[indexImg],imgOut], 2, 1)  
+    elif args["background"]:
+        imgStacked = cvzone.stackImages([imgList[indexImg]], 1, 1)   
+    elif args["onlykeyed"]:
+        imgStacked = cvzone.stackImages([imgOut], 1, 1)
     else:
-        if args["background"]:
-            imgStacked = cvzone.stackImages([imgList[indexImg], img, imgOut], 3, 1)
-            cv2.imshow("Image", imgStacked)
-        else:
-            imgStacked = cvzone.stackImages([img, imgOut], 2, 1)
-        if not args["nofps"]:
-            _, imgStacked = fpsReader.update(imgStacked, color=(0, 0, 255))
+        imgStacked = cvzone.stackImages([imgList[indexImg], img, imgOut], 3, 1)
         cv2.imshow("Image", imgStacked)
-
-    # define keystrokes
+    if not args["nofps"]:
+        _, imgStacked = fpsReader.update(imgStacked, color=(0, 0, 255))
+        cv2.imshow("Image", imgStacked)
+#Well this wasn't even as long as I thought... so I guess I'll just leave it like that
+#define keystrokes
     key = cv2.waitKey(1)
     if key == ord('+'):
         if indexImg < len(imgList) - 1:
