@@ -61,13 +61,19 @@ func main() {
 		}
 
 		if strings.Contains(runpy, "1") {
-			vars = cmd
+			vars = vars + "-oi"
 		}
 		if strings.Contains(runpy, "2") {
-			vars = cmd + " -ok"
+			vars = vars + "-ok"
 		}
 		if strings.Contains(runpy, "3") {
-			vars = cmd + " -b"
+			vars = vars + "-b"
+		}
+		if strings.Contains(runpy, "4") {
+			vars = vars + "-ns"
+		}
+		if strings.Contains(runpy, "5") {
+			vars = vars + "-nfps"
 		}
 
 		helptext.Text = runpy + " cmd: " + cmd
@@ -78,7 +84,7 @@ func main() {
 		}
 		mydir = mydir + cmd
 		cmdexec := (strings.Replace(mydir, "\\", "/", -1))
-		runcmd := exec.Command("python3", cmdexec)
+		runcmd := exec.Command("python3", cmdexec, vars)
 		var out bytes.Buffer
 		var stderr bytes.Buffer
 		runcmd.Stdout = &out
