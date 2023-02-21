@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	_ "embed"
 	"fmt"
 	"log"
@@ -16,6 +17,7 @@ import (
 
 var runpy string
 var cmd string = "\\bin\\app.py"
+var vars string
 
 func main() {
 
@@ -59,13 +61,13 @@ func main() {
 		}
 
 		if strings.Contains(runpy, "1") {
-			cmd = cmd
+			vars = cmd
 		}
 		if strings.Contains(runpy, "2") {
-			cmd = cmd + " -ok"
+			vars = cmd + " -ok"
 		}
 		if strings.Contains(runpy, "3") {
-			cmd = cmd + " -b"
+			vars = cmd + " -b"
 		}
 
 		helptext.Text = runpy + " cmd: " + cmd
@@ -76,8 +78,14 @@ func main() {
 		}
 		mydir = mydir + cmd
 		cmdexec := (strings.Replace(mydir, "\\", "/", -1))
-		runcmd := exec.Command("python3 " + cmdexec)
+		runcmd := exec.Command("python3", cmdexec)
+		var out bytes.Buffer
+		var stderr bytes.Buffer
+		runcmd.Stdout = &out
+		runcmd.Stderr = &stderr
+		fmt.Println(runcmd)
 		if err := runcmd.Run(); err != nil {
+			fmt.Println(fmt.Sprint(err) + ": " + stderr.String())
 			log.Fatal(err)
 		}
 
