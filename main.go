@@ -17,7 +17,7 @@ import (
 
 var runpy string
 var cmd string = "\\bin\\app.py"
-var vars string
+var runcmd *exec.Cmd
 
 func main() {
 
@@ -37,44 +37,12 @@ func main() {
 	Backgroundpicture := widget.NewCheck("Orignal Backgroundpicture", func(b2 bool) {})
 	Thresholdslider := widget.NewCheck("Threshold Slider", func(b3 bool) {})
 	fpsreader := widget.NewCheck("Fps reader", func(b4 bool) {})
+	Threshold := widget.NewCheck("Threshold", func(b5 bool) {})
+	label := widget.NewLabel("Define Threshold (only applies if 'Treshold' is checked):")
+	Thdecimal := widget.NewEntry()
+	spacer := widget.NewLabel("")
 
 	Launcher := widget.NewButtonWithIcon("Launch", theme.ConfirmIcon(), func() {
-
-		if Cameraoutput.Checked {
-			runpy = runpy + "1"
-		}
-
-		if finalpic.Checked {
-			runpy = runpy + "2"
-		}
-
-		if Backgroundpicture.Checked {
-			runpy = runpy + "3"
-		}
-
-		if Thresholdslider.Checked {
-			runpy = runpy + "4"
-		}
-
-		if fpsreader.Checked {
-			runpy = runpy + "5"
-		}
-
-		if strings.Contains(runpy, "1") {
-			vars = vars + "-oi"
-		}
-		if strings.Contains(runpy, "2") {
-			vars = vars + "-ok"
-		}
-		if strings.Contains(runpy, "3") {
-			vars = vars + "-b"
-		}
-		if strings.Contains(runpy, "4") {
-			vars = vars + "-ns"
-		}
-		if strings.Contains(runpy, "5") {
-			vars = vars + "-nfps"
-		}
 
 		helptext.Text = runpy + " cmd: " + cmd
 
@@ -84,7 +52,49 @@ func main() {
 		}
 		mydir = mydir + cmd
 		cmdexec := (strings.Replace(mydir, "\\", "/", -1))
-		runcmd := exec.Command("python3", cmdexec, vars)
+
+		//check if the checkboxes are ticked and add the right parameters to the runcmd command
+
+		args := []string{}
+		if Cameraoutput.Checked {
+			args = append(args, "-oi")
+		}
+		if finalpic.Checked {
+			args = append(args, "-ok")
+		}
+		if Backgroundpicture.Checked {
+			args = append(args, "-b")
+		}
+		if Thresholdslider.Checked {
+			args = append(args, "-ns")
+		}
+		if fpsreader.Checked {
+			args = append(args, "-nfps")
+		}
+		if Threshold.Checked {
+			input := "-t " + Thdecimal.Text
+			args = append(args, input)
+		}
+		vars := len(args)
+
+		switch vars {
+		case 0:
+			runcmd = exec.Command("python3", cmdexec)
+		case 1:
+			runcmd = exec.Command("python3", cmdexec, args[0])
+		case 2:
+			runcmd = exec.Command("python3", cmdexec, args[0], args[1])
+		case 3:
+			runcmd = exec.Command("python3", cmdexec, args[0], args[1], args[2])
+		case 4:
+			runcmd = exec.Command("python3", cmdexec, args[0], args[1], args[2], args[3])
+		case 5:
+			runcmd = exec.Command("python3", cmdexec, args[0], args[1], args[2], args[3], args[4])
+		case 6:
+			runcmd = exec.Command("python3", cmdexec, args[0], args[1], args[2], args[3], args[4], args[5])
+		default:
+			runcmd = exec.Command("python3", cmdexec)
+		}
 		var out bytes.Buffer
 		var stderr bytes.Buffer
 		runcmd.Stdout = &out
@@ -97,7 +107,7 @@ func main() {
 
 	})
 
-	contenttab1 := widget.NewVBox(Cameraoutput, finalpic, Backgroundpicture, Thresholdslider, fpsreader, Launcher, helptext)
+	contenttab1 := widget.NewVBox(Cameraoutput, finalpic, Backgroundpicture, Thresholdslider, fpsreader, Threshold, label, Thdecimal, spacer, Launcher, helptext)
 	contenttab3 := widget.NewVBox(helptext, helptext2, helptext3, helptext4, helptext5, helptext6, helptext7)
 	contenttab4 := widget.NewVBox(creatortext, creatortext2, Versionreference)
 
