@@ -26,6 +26,14 @@ Please note that the pictures need to have the same or a greater resolution as t
 
 You can take a screenshot of the current window by pressing the key "s". The screenshot will be saved in the local screenshot directory.
 
+## GUI
+
+Graphical userinterface written in Golang for command line shy people
+
+![image](https://user-images.githubusercontent.com/87771733/221035422-2f88add7-e66a-434e-95c4-4e5babf16634.png)
+
+This really just calls the app.py program with some parameters
+
 ## Command line parameters
 
 -ns or --noslide: Removes the slider from the app
@@ -40,7 +48,7 @@ You can take a screenshot of the current window by pressing the key "s". The scr
 
 -nfps or --nofps: Turn off the fps reader that reads the current framerate of the camera
 
-## Examples
+## Command line Examples
 
 1. Display the keyed out window next to the background with thresholdslider:
    
