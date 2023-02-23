@@ -35,8 +35,7 @@ func main() {
 	Cameraoutput := widget.NewCheck("Original Cameraoutput", func(b bool) {})
 	finalpic := widget.NewCheck("Keyed out picture", func(b1 bool) {})
 	Backgroundpicture := widget.NewCheck("Orignal Backgroundpicture", func(b2 bool) {})
-	Thresholdslider := widget.NewCheck("Threshold Slider", func(b3 bool) {})
-	fpsreader := widget.NewCheck("Fps reader", func(b4 bool) {})
+	Thresholdslider := widget.NewCheck("No Threshold Slider", func(b3 bool) {})
 	Threshold := widget.NewCheck("Threshold", func(b5 bool) {})
 	label := widget.NewLabel("Define Threshold (only applies if 'Treshold' is checked):")
 	Thdecimal := widget.NewEntry()
@@ -68,9 +67,6 @@ func main() {
 		if Thresholdslider.Checked {
 			args = append(args, "-ns")
 		}
-		if fpsreader.Checked {
-			args = append(args, "-nfps")
-		}
 		if Threshold.Checked {
 			input := "-t " + Thdecimal.Text
 			args = append(args, input)
@@ -90,8 +86,6 @@ func main() {
 			runcmd = exec.Command("python3", cmdexec, args[0], args[1], args[2], args[3])
 		case 5:
 			runcmd = exec.Command("python3", cmdexec, args[0], args[1], args[2], args[3], args[4])
-		case 6:
-			runcmd = exec.Command("python3", cmdexec, args[0], args[1], args[2], args[3], args[4], args[5])
 		default:
 			runcmd = exec.Command("python3", cmdexec)
 		}
@@ -107,7 +101,7 @@ func main() {
 
 	})
 
-	contenttab1 := widget.NewVBox(Cameraoutput, finalpic, Backgroundpicture, Thresholdslider, fpsreader, Threshold, label, Thdecimal, spacer, Launcher, helptext)
+	contenttab1 := widget.NewVBox(Cameraoutput, finalpic, Backgroundpicture, Thresholdslider, Threshold, label, Thdecimal, spacer, Launcher, helptext)
 	contenttab3 := widget.NewVBox(helptext, helptext2, helptext3, helptext4, helptext5, helptext6, helptext7)
 	contenttab4 := widget.NewVBox(creatortext, creatortext2, Versionreference)
 
@@ -123,5 +117,4 @@ func main() {
 	w.SetContent(tabs)
 	w.Resize(fyne.Size{600, 350})
 	w.ShowAndRun()
-
 }

@@ -83,3 +83,4 @@ while True:
         break
     elif key == ord('s'):
         fileName = f"./screenshots/screenshot_{str(datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))}.jpg"
+        
